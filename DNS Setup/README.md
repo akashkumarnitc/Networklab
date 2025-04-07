@@ -60,16 +60,23 @@ sudo nano /etc/bind/zones/db.nwlab.cse.nitc.ac.in
 Paste:
 ```bash
 $TTL    604800
-@       IN      SOA     ns1.nwlab.cse.nitc.ac.in. admin.nwlab.cse.nitc.ac.in. (
-                              2025040701         ; Serial
-                              604800             ; Refresh
-                              86400              ; Retry
-                              2419200            ; Expire
-                              604800 )           ; Negative Cache TTL
-;
+@       IN      SOA     ns1.nwlab.cse.nitc.ac.in. root.nwlab.cse.nitc.ac.in. (
+                             2025040701 ; Serial
+                             604800     ; Refresh
+                             86400      ; Retry
+                             2419200    ; Expire
+                             604800 )   ; Negative Cache TTL
+
+; Name servers
 @       IN      NS      ns1.nwlab.cse.nitc.ac.in.
+@       IN      NS      ns2.nwlab.cse.nitc.ac.in.
+
+; A records
 ns1     IN      A       192.168.56.10
-www     IN      A       192.168.56.100
+ns2     IN      A       192.168.56.11
+host1   IN      A       192.168.56.20
+
+; CNAME or additional entries if needed
 ```
 
 #### ➤ Allow Listening:
