@@ -35,11 +35,17 @@ sudo apt install bind9 bind9utils bind9-doc dnsutils -y
 ```
 
 ---
+### 🔹 1.1 Create Zones Directory:
+```bash
+sudo mkdir /etc/bind/zones
 
-### 🔹 2. Configure the Master Server
+```
+### 🔹 1.2 Define zone
+```bash
+sudo nano /etc/bind/named.conf.local
+```
+#### ➤ Named Config: Edit named.conf.local add this
 
-#### ➤ Named Config:
-Edit `/etc/bind/named.conf.local`
 ```bash
 zone "nwlab.cse.nitc.ac.in" {
     type master;
@@ -47,21 +53,20 @@ zone "nwlab.cse.nitc.ac.in" {
     allow-transfer { 192.168.56.11; };
 };
 ```
-
-#### ➤ Create Zones Directory:
+### 🔹 1.3 Create zone files
 ```bash
-sudo mkdir /etc/bind/zones
-```
-
-#### ➤ Create Zone File:
-```bash
+sudo cp /etc/bind/db.local /etc/bind/zones/db.nwlab.cse.nitc.ac.in
 sudo nano /etc/bind/zones/db.nwlab.cse.nitc.ac.in
 ```
+
+### 🔹 2. Configure the Master Server
+#### ➤ Edit Zone File:
+
 Paste:
 ```bash
 $TTL    604800
 @       IN      SOA     ns1.nwlab.cse.nitc.ac.in. root.nwlab.cse.nitc.ac.in. (
-                             2025040701 ; Serial
+                             2025040701 ; Serial (just to manage versions/updates in dns entry)
                              604800     ; Refresh
                              86400      ; Retry
                              2419200    ; Expire
@@ -79,7 +84,7 @@ host1   IN      A       192.168.56.20
 ; CNAME or additional entries if needed
 ```
 
-#### ➤ Allow Listening:
+#### ➤ Allow Listening: can skip by turning off the automatic dns server while setting ip.
 Edit `/etc/bind/named.conf.options`:
 ```bash
 options {
@@ -97,7 +102,7 @@ sudo systemctl restart bind9
 
 ---
 
-### 🔹 3. Configure the Slave Server
+#### 🔹 3. Configure the Slave Server
 
 #### ➤ Edit Named Config:
 ```bash
@@ -137,7 +142,7 @@ dig @localhost www.nwlab.cse.nitc.ac.in
 ls /var/cache/bind/ | grep nwlab
 ```
 
----
+----------------
 
 ## ⚙️ Advanced Implementations
 
@@ -249,7 +254,24 @@ ls /var/cache/bind/
 ```
 
 ---
+## 🧠 Why Is There a Specific Directory/File Naming Convention in BIND?
 
+Because BIND (named) is a configuration-heavy service, it:
+###	•	expects files in certain locations (based on OS defaults or /etc/named.conf).
+###	•	uses standard naming to clearly identify zone files and role (master/slave).
+###	•	follows security and permission best practices for DNS data storage.
+```bash
+/etc/
+├── named.conf
+├── named.rfc1912.zones
+
+/var/named/
+├── master/
+│   ├── forward.zone       # Master forward zone
+│   └── reverse.zone       # Master reverse zone
+├── slaves/
+│   └── forward.zone       # Copied from master
+```
 ## 📚 Resources
 - BIND9 Manual: `man named`
 - [ISC BIND Documentation](https://bind9.readthedocs.io/)
