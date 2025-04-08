@@ -66,7 +66,7 @@ Paste:
 ```bash
 $TTL    604800
 @       IN      SOA     ns1.nwlab.cse.nitc.ac.in. root.nwlab.cse.nitc.ac.in. (
-                             2025040701 ; Serial (just to manage versions/updates in dns entry)
+                             2025040701 ; Serial (MUST update each time you add a entry to manage versions/updates in dns entry)
                              604800     ; Refresh
                              86400      ; Retry
                              2419200    ; Expire
@@ -99,7 +99,10 @@ options {
 sudo named-checkzone nwlab.cse.nitc.ac.in /etc/bind/zones/db.nwlab.cse.nitc.ac.in
 sudo systemctl restart bind9
 ```
-
+#### ➤ Or Reload Server without Restart
+```bash
+sudo rndc reload
+```
 ---
 
 #### 🔹 3. Configure the Slave Server
@@ -121,11 +124,14 @@ zone "nwlab.cse.nitc.ac.in" {
 ```bash
 sudo systemctl restart bind9
 ```
-
+#### ➤ Or Reload Server without Restart
+```bash
+sudo rndc reload
+```
 ---
 
 ## 🔍 Testing Your Setup
-
+## Replace localhost by dns server ip and host domain to be resolved 
 ### ✔️ From Any Host:
 ```bash
 nslookup www.nwlab.cse.nitc.ac.in 192.168.56.10
